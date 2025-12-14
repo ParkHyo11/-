@@ -31,7 +31,7 @@ ERROR_CODE = {
 
 # WRQ (Write Request) 전송 함수
 def send_wrq(filename, mode):
-    # WRQ 패킷 포맷: opcode | filename | 0 | mode | 0
+    # WRQ 패킷 포맷
     format = f'>h{len(filename)}sB{len(mode)}sB'
     wrq_message = pack(
         format,
@@ -47,7 +47,7 @@ def send_wrq(filename, mode):
 
 # RRQ (Read Request) 전송 함수
 def send_rrq(filename, mode):
-    # RRQ 패킷 포맷: opcode | filename | 0 | mode | 0
+    # RRQ 패킷 포맷
     format = f'>h{len(filename)}sB{len(mode)}sB'
     rrq_message = pack(
         format,
@@ -63,7 +63,7 @@ def send_rrq(filename, mode):
 
 # ACK 전송 함수
 def send_ack(seq_num, server):
-    # ACK 패킷 포맷: opcode | block number
+    # ACK 패킷 포맷
     format = f'>hh'
     ack_message = pack(format, OPCODE['ACK'], seq_num)
     sock.sendto(ack_message, server)
