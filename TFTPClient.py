@@ -35,10 +35,10 @@ def send_wrq(filename, mode):
     format = f'>h{len(filename)}sB{len(mode)}sB'
     wrq_message = pack(
         format,
-        OPCODE['WRQ'],
-        bytes(filename, 'utf-8'),
+        OPCODE['WRQ'], # WRQ opcode
+        bytes(filename, 'utf-8'), #업로드할 파일 이름
         0,
-        bytes(mode, 'utf-8'),
+        bytes(mode, 'utf-8'), #전송 모드
         0
     )
     # 서버로 WRQ 패킷 전송
@@ -51,10 +51,10 @@ def send_rrq(filename, mode):
     format = f'>h{len(filename)}sB{len(mode)}sB'
     rrq_message = pack(
         format,
-        OPCODE['RRQ'],
-        bytes(filename, 'utf-8'),
+        OPCODE['RRQ'], # RRQ opcode
+        bytes(filename, 'utf-8'), #다운로드할 파일 이름
         0,
-        bytes(mode, 'utf-8'),
+        bytes(mode, 'utf-8'), #업로드할 파일 이름
         0
     )
     # 서버로 RRQ 패킷 전송
@@ -66,7 +66,7 @@ def send_ack(seq_num, server):
     # ACK 패킷 포맷
     format = f'>hh'
     ack_message = pack(format, OPCODE['ACK'], seq_num)
-    sock.sendto(ack_message, server)
+    so    sock.sendto(ack_message, server) 
     print(seq_num)
     print(ack_message)
     
@@ -81,10 +81,10 @@ def put_file(filename):
     send_wrq(filename, mode)
 
     try:
-        # 서버로부터 ACK(0) 또는 ERROR 수신 대기
-        data, server_new_socket = sock.recvfrom(516)
-    except socket.timeout:
-        print("No response to WRQ")
+        # 서버로부터 ACK 또는 ERROR 수신 대기
+        data, server_new_socket = sock.recvfrom(516om(516)
+    except socket.timeout: # 서버 응답이 없을 경우 타임아웃 처리
+print("No response to WRQ")
         return
 
     opcode = int.from_bytes(data[:2], 'big')
@@ -100,13 +100,14 @@ def put_file(filename):
         print("WRQ failed")
         return
 
-    block_number = 1
+    block_number = 1 # DATA 전송 시 사용할 블록 번호 초기화
 
     # 파일을 512바이트 단위로 읽어 DATA 전송
     with open(filename, 'rb') as file:
         while True:
             file_block = file.read(BLOCK_SIZE)
 
+            # DATA 패킷 포맷
             data_format = f'>hh{len(file_block)}s'
             data_packet = pack(
                 data_format,
